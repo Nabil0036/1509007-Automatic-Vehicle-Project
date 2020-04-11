@@ -1,26 +1,34 @@
-#The program code for lane detection system is given below:
+# Program code for lane detection system.
 
-import cv2
-import numpy as np
-import RPi.GPIO as GPIO
+#==================== Imports start
+import time
 import threading
-from imutils.video import VideoStream
+
+# pi related imports
+import RPi.GPIO as GPIO
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+
+# image and vision related imports
+import cv2
+import numpy as np
 import imutils
-import time
+from imutils.video import VideoStream
+#==================== Imports End
+
 
 def mapValue ( x, in_min, in_max, out_min, out_max ) :
     return( x − in_min ) ∗ ( out_max − out_min )   // ( in_max − in_min ) + out_min
     
 def calculateee( ) :
-    d = int ( ( y [ l − 1 ] + y[0] ) / 2)
-    cv2.line ( frame , ( y[0], int( np.size( gray, 0 ) / 2 ) ) ,
-    ( y [ l −1], int( np.size( gray, 0 ) / 2 ) ), ( 255, 0, 0 ), 2 )
+    d = int ( ( y[l − 1] + y[0] ) / 2)
+    cv2.line ( frame , ( y[0], int( np.size( gray, 0 ) / 2 ) ), ( y [l −1], int( np.size( gray, 0 ) / 2 ) ), ( 255, 0, 0 ), 2 )
     return d
+
 cap = VideoStream().start()
 time.sleep( 2.0 )
 
+#====== Pi related pin setup Start
 GPIO.setmode( GPIO.BOARD )
 GPIO.setwarnings( False )
 
@@ -40,20 +48,23 @@ GPIO.setup( LED2, GPIO.OUT )
 
 pwm1 = GPIO.PWM( LED1, 5000 )
 pwm2 = GPIO.PWM( LED2, 5000 )
-pwm1.start(0)
+#====== Pi related pin setup End
 
+# Initial forward run of the car
+pwm1.start(0)
 pwm2.start(0)
-GPIO.output(FRD1,1)
-GPIO.output(FRD2,1)
-GPIO.output(BAK1,0)
-GPIO.output(BAK2,0)
+GPIO.output(FRD1, 1)
+GPIO.output(FRD2, 1)
+GPIO.output(BAK1, 0)
+GPIO.output(BAK2, 0)
 
 ##cv2.namedWindow(”Video”)
 global frame1
 global roi1,running
+
 while(True):
 	while(True):
-		##Captureframe−by−frame
+		##Capture frame−by−frame
 		if cap.read() == None:
 			cap = VideoStream().start()
 		else:
